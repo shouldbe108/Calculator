@@ -44,13 +44,19 @@ class Calculator:
         self.operations = {"/": "\u00F7", "*": "\u00D7", "-": "-", "+": "+"} #\u00F7 division, \u00D7 multiplication
         
         self.buttons_frame = self.create_buttons_frame()
+        self.buttons_frame.rowconfigure(0,weight=1)
+        for x in range(1,5):
+            self.buttons_frame.rowconfigure(x, weight=1)
+            self.buttons_frame.columnconfigure(x, weight=1) #help rows and columns to expand)
+            
+        
         self.create_digit_buttons()
         self.create_operator_buttons()
         self.create_special_buttons()
         
     def create_special_buttons(self):
-        self.create_clear_button
-        self.create_equals_button
+        self.create_clear_button()
+        self.create_equals_button()
         
     def create_display_labels(self):
         total_label=tk.Label(self.display_frame, text=self.total_expression, anchor=tk.E, bg=LIGHT_GRAY, fg=LABEL_COLOR, padx=24, font=SMALL_FONT_STYLE) #anchor positions text to the East
