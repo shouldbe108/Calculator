@@ -21,9 +21,9 @@ class Calculator:
         self.window.geometry("375x667")
         self.window.resizable(0,0)
         self.window.title("calculator")
-        
-        self.total_expression = "0"
-        self.current_expression = "0"
+    #inital values were zero but after the creation of operator expressions, they were removed.    
+        self.total_expression = ""
+        self.current_expression = ""
         
     #two frams for buttons and display
         self.display_frame = self.create_display_frame()
@@ -73,12 +73,22 @@ class Calculator:
         frame.pack(expand=True, fill="both")
         return frame
     
+    def add_to_expression(self, value):
+        self.current_expression += str(value)
+        self.update_label()
+    
     def create_digit_buttons(self):
         for digit, grid_value in self.digits.items():
-            button = tk.Button(self.buttons_frame, text=str(digit), bg=WHITE, fg=LABEL_COLOR, font=DIGITS_FONT_STYLE, borderwidth=0)
+            button = tk.Button(self.buttons_frame, text=str(digit), bg=WHITE, fg=LABEL_COLOR, font=DIGITS_FONT_STYLE, borderwidth=0, command= lambda x=digit: self.add_to_expression(x))
             button.grid(row=grid_value[0], column=grid_value[1],sticky=tk.NSEW)
             
-            
+    def append_operator(self, operator):
+        self.current_expression += operator
+        self.total_expression += self.current_expression
+        self.current_expression=""
+        self.update_total_label()
+        self.update_label
+        
     def create_operator_buttons(self):
         i = 0
         for operator, symbol in self.operations.items():
@@ -86,13 +96,22 @@ class Calculator:
                                borderwidth=0, command=lambda x=operator: self.append_operator(x))
             button.grid(row=i, column=4, sticky=tk.NSEW)
             i += 1
-    
+    def clear(self):
+        self.current_expression=""
+        self.total_expression=""
+        self.update_label()
+        self.update_total_label()
     def create_clear_button(self):
-        button=tk.Button(self.buttons_frame, text="C", bg=OFF_WHITE, fg=LABEL_COLOR, font=DEFAULT_FONT_STYLE, borderwidth=0)
+        button=tk.Button(self.buttons_frame, text="C", bg=OFF_WHITE, fg=LABEL_COLOR, font=DEFAULT_FONT_STYLE, borderwidth=0, command=self.clear)
         button.grid(row=0, column=1, columnspan=3, sticky=tk.NSEW)
-        
+    def evaluate(self):
+        self.total_expression+=self.current_expression
+        self.update_total_label
+        self.current_expression=str(eval(self.total_expression))
+        self.total_expression=""
+        self.update_label()
     def create_equals_button(self):
-        button=tk.Button(self.buttons_frame, text="=", bg=LIGHT_BLUE, fg=LABEL_COLOR, font=DEFAULT_FONT_STYLE, borderwidth=0)
+        button=tk.Button(self.buttons_frame, text="=", bg=LIGHT_BLUE, fg=LABEL_COLOR, font=DEFAULT_FONT_STYLE, borderwidth=0, command=self.evaluate)
         button.grid(row=4, column=3, columnspan=2, sticky=tk.NSEW)
         
     
@@ -101,6 +120,12 @@ class Calculator:
         frame.pack(expand=True, fill="both")
         return frame
     
+    def update_total_label(self): #method to update total label 
+        self.total_label.config(text=self.total_expression)
+        
+    def update_label(self):
+        self.label.config(text=self.current_expression)
+        
     
     def run(self):
         self.window.mainloop()
